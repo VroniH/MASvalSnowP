@@ -1,0 +1,14 @@
+__pycache__/
+.ipynb_checkpoints
+data/
+ERA5/
+figures/
+Maria_Salem/
+Profildaten_LAWIS/
+R_Scripts/
+raw_data/
+TIFF_Svalbard/
+.Rhistory
+*.pyc
+*.xlsx
+ScanLocations.jpg
