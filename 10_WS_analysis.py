@@ -8,7 +8,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
+from matplotlib import interactive
+import seaborn
 
 # IMPORT DATA -------------------------------------------
 
@@ -31,12 +32,11 @@ AVD_rad_all = pd.read_csv('raw_data/Adventdalen_New_Fem_minutt.dat',
 
 # Radiaton data is available in 5min steps, create hourly mean values of the radiation components. 
 # shift(1) - shift the whole dataset by one timestep so that a value at each timestep is the mean of the previous hour
-AVD_rad_data = pd.DataFrame.from_items([
-	('SWin_Wpm2',AVD_rad_all['SWin_Wpm2'].resample('H').mean().shift(1)), #opp..upward looking instrument measuring SW down
-	('SWout_Wpm2', AVD_rad_all['SWout_Wpm2'].resample('H').mean().shift(1)), #ned..downward looking instrument measuring SW up
-	('LWin_Wpm2', AVD_rad_all['LWin_Wpm2'].resample('H').mean().shift(1)),
-	('LWout_Wpm2', AVD_rad_all['LWout_Wpm2'].resample('H').mean().shift(1))])
-
+AVD_rad_data = pd.DataFrame.from_dict({
+	'SWin_Wpm2':AVD_rad_all['SWin_Wpm2'].resample('H').mean().shift(1), #opp..upward looking instrument measuring SW down
+	'SWout_Wpm2': AVD_rad_all['SWout_Wpm2'].resample('H').mean().shift(1), #ned..downward looking instrument measuring SW up
+	'LWin_Wpm2': AVD_rad_all['LWin_Wpm2'].resample('H').mean().shift(1),
+	'LWout_Wpm2': AVD_rad_all['LWout_Wpm2'].resample('H').mean().shift(1)})
 # Import data from AWS Gruvefjellet (GF)
 GF_data = pd.read_csv('raw_data/Gruvefjellet_Res_data.dat', 
 	skiprows = [0,2,3], index_col = 0,parse_dates = True, na_values = 'NAN', header = 0 ,
@@ -49,17 +49,31 @@ GF_data = pd.read_csv('raw_data/Gruvefjellet_Res_data.dat',
 	'R_surf_ohm','R_1m_ohm', 'R_2m_ohm', 'R_3m_ohm', 'R_4m_ohm',
 	'R_5m_ohm', 'R_6m_ohm', 'Batt_V_Min'])
 
-GF_data = GF_data['2016-08-01 00:00:00':'2017-06-01 00:00:00']			 	
+GF_data = GF_data['2016-08-01 00:00:00':'2017-07-31 23:00:00']			 	
 # AVD_rad_data = AVD_rad_data['2016-08-01 00:00:00':'2017-04-03 00:00:00'] 
 # ERA5 = ERA5_all['2016-08-01 00:00:00':'2017-04-03 00:00:00']
-AVD_data = AVD_data['2016-08-01 00:00:00':'2017-06-01 00:00:00']
+AVD_data = AVD_data['2016-08-01 00:00:00':'2017-07-31 23:00:00']
+
+
+diff = GF_data.T3m_minutt_Avg - AVD_data.T2m_PT1000_Avg
+fig1,ax1 = plt.subplots(figsize = (12,5))
+seaborn.boxplot(diff.index.strftime("%b\'%y") ,diff,ax=ax1)
+interactive(True)
+plt.show(fig1)
+
+groups = diff.groupby(pd.Grouper(freq='M'))
+months = pd.concat([pd.DataFrame(x[1].values) for x in groups], axis=1)
+months = pd.DataFrame(months)
+months.columns = [8,9,10,11,12,1,2,3,4,5,6,7]
+f2 = months.boxplot()
+plt.show(f2)
+interactive(False)
 
 raw_stats={}
-diff = GF_data.T3m_minutt_Avg - AVD_data.T2m_PT1000_Avg
 raw_stats['davg_diff'] = diff.resample('D').mean()
 raw_stats['mavg_diff'] = diff.resample('M').mean()
 raw_stats['yavg_diff'] = diff.resample('Y').mean()
-
+print(raw_stats['mavg_diff'].index.month)
 daterange = pd.date_range(start='2016-08-01 00:00:00',
 	end='2017-06-01 00:00:00', periods=None, freq='D',
 	normalize=False, name='DateTime', closed=None)
@@ -70,6 +84,7 @@ for i in range(0, len(raw_stats['mavg_diff'])):
 		if np.logical_and(mavg_diff.index.month[j] == raw_stats['mavg_diff'].index.month[i],
 		 mavg_diff.index.year[j] == raw_stats['mavg_diff'].index.year[i]):
 			mavg_diff[j] = raw_stats['mavg_diff'][i]
+print(mavg_diff, raw_stats['mavg_diff'])
 for i in range(0, len(raw_stats['yavg_diff'])):
 	for j in range(0,len(daterange)):
 		if yavg_diff.index.year[j] == raw_stats['yavg_diff'].index.year[i]:
@@ -95,3 +110,6 @@ ax2.set_title('Mean differences GF3m-AVD2m')
 plt.show()
 # f9.savefig('figures/T_meanDiff2m3m.png', bbox_inches='tight')
 # plt.close(f9)
+
+plt.boxplot(raw_stats['mavg_diff'])
+plt.show()
