@@ -11,4 +11,5 @@ TIFF_Svalbard/
 .Rhistory
 *.pyc
 *.xlsx
-ScanLocations.jpg
+*.jpg
+.vscode/
