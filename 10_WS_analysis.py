@@ -55,7 +55,7 @@ GF_data = GF_data['2016-08-01 00:00:00':'2017-07-31 23:00:00']
 AVD_data = AVD_data['2016-08-01 00:00:00':'2017-07-31 23:00:00']
 
 
-diff = GF_data.T3m_minutt_Avg - AVD_data.T2m_PT1000_Avg
+diff = GF_data.T3m_minutt_Avg - AVD_data.T2m_Rotron_Avg
 fig1,ax1 = plt.subplots(figsize = (12,5))
 seaborn.boxplot(diff.index.strftime("%b\'%y") ,diff,ax=ax1)
 interactive(True)
