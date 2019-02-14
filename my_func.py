@@ -5,8 +5,8 @@ import datetime as dt
 
 
 # Create .SMET file for SNOWPACK input
-def create_SMET(name,fact,ID,lat,lon,east,north,height,data):
-	SMET_file = open('/home/user/Documents/Programming/SnowPACK/Masterarbeit/input_sensitivity/'+str(name)+'_'+str(fact)+'.smet', mode='w')
+def create_SMET(name,fact,ID,lat,lon,east,north,height,data,pathin):
+	SMET_file = open(pathin+str(name)+'_'+str(fact)+'.smet', mode='w')
 	SMET_file.writelines(['SMET 1.1 ASCII\n',
 		'[HEADER]\n',
 		'station_id \t\t\t = '+str(ID)+'\n',
@@ -31,8 +31,8 @@ def create_SMET(name,fact,ID,lat,lon,east,north,height,data):
 	SMET_file.close()
 
 # Create .SNO file for SNOWPACK input
-def create_SNO(name,fact,ID,lat,lon,east,north,height,slope,azi):
-	SNO_file = open('/home/user/Documents/Programming/SnowPACK/Masterarbeit/input_sensitivity/'+str(name)+'_'+str(fact)+'.sno', mode='w')
+def create_SNO(name,fact,ID,lat,lon,east,north,height,slope,azi, pathin):
+	SNO_file = open(pathin+str(name)+'_'+str(fact)+'.sno', mode='w')
 	SNO_file.writelines(['SMET 1.1 ASCII\n',
 		'[HEADER]\n',
 		'station_id \t\t\t = '+str(ID)+'\n',
@@ -66,9 +66,9 @@ def create_SNO(name,fact,ID,lat,lon,east,north,height,slope,azi):
 	SNO_file.close()
 
 # Create .INI file for SNOWPACK input
-def create_INI_case1(name,fact):
-	INI_file = open('/home/user/Documents/Programming/SnowPACK/Masterarbeit/cfgfiles/'
-	+name+'_'+fact+'_case1.ini', mode = 'w')	
+def create_INI(name,fact,pathini,pathin,pathout):
+	INI_file = open(pathini+
+	name+'_'+fact+'.ini', mode = 'w')	
 	INI_file.writelines(['[GENERAL]\n',
 	'BUFF_CHUNK_SIZE	=	370\n',
 	'BUFF_BEFORE	=	1.5\n\n',
@@ -77,10 +77,10 @@ def create_INI_case1(name,fact):
 	'COORDPARAM	=	33x\n',
 	'TIME_ZONE	=	1\n',
 	'METEO	=	SMET\n',
-	'METEOPATH	=	/home/user/Documents/Programming/SnowPACK/Masterarbeit/input_sensitivity\n',
+	'METEOPATH	=	'+pathin+'\n',
 	'STATION1	=	'+str(name)+'_'+str(fact)+'.smet\n',
 	'ISWR_IS_NET	=	FALSE\n',
-	'SNOWPATH	=	/home/user/Documents/Programming/SnowPACK/Masterarbeit/input_sensitivity\n',
+	'SNOWPATH	=	'+pathin+'\n',
 	'SNOW	=	SMET\n',
 	'SNOWFILE1	=	'+str(name)+'_'+str(fact)+'.sno\n',
 
@@ -88,12 +88,12 @@ def create_INI_case1(name,fact):
 	'COORDSYS	=	UTM\n',
 	'COORDPARAM	=	33X\n',
 	'TIME_ZONE	=	1\n',
-	'METEOPATH	=	./output_sensitivity\n',
-	'EXPERIMENT	=	_case1_'+str(fact)+'\n',
+	'METEOPATH	=	'+pathout+'\n',
+	'EXPERIMENT	=	'+str(fact)+'\n',
 	'SNOW	=	SMET\n',
-	'SNOWPATH	=	/home/user/Documents/Programming/SnowPACK/Masterarbeit/output_sensitivity\n',
-	'BACKUP_DAYS_BETWEEN	=	120\n',
-	'FIRST_BACKUP	=	30\n',
+	'SNOWPATH	=	'+pathout+'\n',
+	'BACKUP_DAYS_BETWEEN	=	365\n',
+	'FIRST_BACKUP	=	400\n',
 	'PROF_WRITE	=	TRUE\n',
 	'PROFILE_FORMAT	=	PRO\n',
 	'PROF_START	=	0\n',
@@ -133,7 +133,7 @@ def create_INI_case1(name,fact):
 	'[SNOWPACKADVANCED]\n',
 	'ASSUME_RESPONSIBILITY	=	AGREE\n',
 	'VARIANT	=	DEFAULT\n',
-	'SNOW_EROSION	=	TRUE\n',
+	'SNOW_EROSION	=	FALSE\n',
 	'WIND_SCALING_FACTOR	=	1.0\n',
 	'NUMBER_SLOPES	=	1\n',
 	'PERP_TO_SLOPE	=	FALSE\n',
@@ -172,125 +172,7 @@ def create_INI_case1(name,fact):
 	'WINDOW_SIZE	=	43200\n'
 	])
 	INI_file.close()
-	return name+'_'+fact+'_case1.ini'
-def create_INI_case2(name,fact):
-	# Create .INI file for SNOWPACK input
-	# Atmospheric stability: NEUTRAL_MO
-	# Use interpolation for precipitation
-	# [INTERPOLATIONS1D]
-	# WINDOW_SIZE	=	86400
-	# PSUM::resample	=	linear
-	# PSUM::linear	=	86400  
-
-	INI_file = open('/home/user/Documents/Programming/SnowPACK/Masterarbeit/cfgfiles/'
-	+name+'_'+fact+'_case2.ini', mode = 'w')	
-	INI_file.writelines(['[GENERAL]\n',
-	'BUFF_CHUNK_SIZE	=	370\n',
-	'BUFF_BEFORE	=	1.5\n\n',
-	'[INPUT]\n',
-	'COORDSYS	=	UTM\n',
-	'COORDPARAM	=	33x\n',
-	'TIME_ZONE	=	1\n',
-	'METEO	=	SMET\n',
-	'METEOPATH	=	/home/user/Documents/Programming/SnowPACK/Masterarbeit/input_sensitivity\n',
-	'STATION1	=	'+str(name)+'_'+str(fact)+'.smet\n',
-	'ISWR_IS_NET	=	FALSE\n',
-	'SNOWPATH	=	/home/user/Documents/Programming/SnowPACK/Masterarbeit/input_sensitivity\n',
-	'SNOW	=	SMET\n',
-	'SNOWFILE1	=	'+str(name)+'_'+str(fact)+'.sno\n',
-
-	'[OUTPUT]\n',
-	'COORDSYS	=	UTM\n',
-	'COORDPARAM	=	33X\n',
-	'TIME_ZONE	=	1\n',
-	'METEOPATH	=	./output_sensitivity\n',
-	'EXPERIMENT	=	_case2_'+str(fact)+'\n',
-	'SNOW	=	SMET\n',
-	'SNOWPATH	=	/home/user/Documents/Programming/SnowPACK/Masterarbeit/output_sensitivity\n',
-	'BACKUP_DAYS_BETWEEN	=	120\n',
-	'FIRST_BACKUP	=	30\n',
-	'PROF_WRITE	=	TRUE\n',
-	'PROFILE_FORMAT	=	PRO\n',
-	'PROF_START	=	0\n',
-	'PROF_DAYS_BETWEEN	=	0.042\n',
-	'HARDNESS_IN_NEWTON	=	FALSE\n',
-	'CLASSIFY_PROFILE	=	FALSE\n',
-	'TS_WRITE	=	TRUE\n',
-	'TS_START	=	0.0\n',
-	'TS_DAYS_BETWEEN	=	0.041666\n',
-	'AVGSUM_TIME_SERIES	=	TRUE\n',
-	'CUMSUM_MASS	=	FALSE\n',
-	'PRECIP_RATES	=	TRUE\n',
-	'OUT_CANOPY	=	FALSE\n',
-	'OUT_HAZ	=	TRUE\n',
-	'OUT_SOILEB	=	FALSE\n',
-	'OUT_HEAT	=	TRUE\n',
-	'OUT_T	=	TRUE\n',
-	'OUT_LW	=	TRUE\n',
-	'OUT_SW	=	TRUE\n',
-	'OUT_MASS	=	TRUE\n',
-	'OUT_METEO	=	TRUE\n',
-	'OUT_STAB	=	TRUE\n\n',
-
-	'[SNOWPACK]\n',
-	'CALCULATION_STEP_LENGTH	=	60\n',
-	'ROUGHNESS_LENGTH	=	0.002\n',
-	'HEIGHT_OF_METEO_VALUES	=	3\n',
-	'HEIGHT_OF_WIND_VALUE	=	3\n',
-	'ENFORCE_MEASURED_SNOW_HEIGHTS	=	FALSE\n',
-	'SW_MODE	=	INCOMING\n',
-	'ATMOSPHERIC_STABILITY	=	NEUTRAL_MO\n',
-	'CANOPY	=	FALSE\n',
-	'MEAS_TSS	=	FALSE\n',
-	'CHANGE_BC	=	FALSE\n',
-	'SNP_SOIL	=	FALSE\n\n',
-
-	'[SNOWPACKADVANCED]\n',
-	'ASSUME_RESPONSIBILITY	=	AGREE\n',
-	'VARIANT	=	DEFAULT\n',
-	'SNOW_EROSION	=	TRUE\n',
-	'WIND_SCALING_FACTOR	=	1.0\n',
-	'NUMBER_SLOPES	=	1\n',
-	'PERP_TO_SLOPE	=	FALSE\n',
-	'THRESH_RAIN	=	1.2\n',
-	'FORCE_RH_WATER	=	TRUE\n',
-	'THRESH_RH	=	0.5\n',
-	'THRESH_DTEMP_AIR_SNOW	=	3.0\n',
-	'HOAR_THRESH_TA	=	1.2\n',
-	'HOAR_THRESH_RH	=	0.97\n',
-	'HOAR_THRESH_VW	=	3.5\n',
-	'HOAR_DENSITY_BURIED	=	125.0\n',
-	'HOAR_MIN_SIZE_BURIED	=	2.0\n',
-	'HOAR_DENSITY_SURF	=	100.0\n',
-	'MIN_DEPTH_SUBSURF	=	0.07\n',
-	'T_CRAZY_MIN	=	210.0\n',
-	'T_CRAZY_MAX	=	340.0\n',
-	'METAMORPHISM_MODEL	=	DEFAULT\n',
-	'NEW_SNOW_GRAIN_SIZE	=	0.3\n',
-	'STRENGTH_MODEL	=	DEFAULT\n',
-	'VISCOSITY_MODEL	=	DEFAULT\n',
-	'SALTATION_MODEL	=	SORENSEN\n',
-	'WATERTRANSPORTMODEL_SNOW	=	BUCKET\n',
-	'WATERTRANSPORTMODEL_SOIL	=	BUCKET\n',
-	'SW_ABSORPTION_SCHEME	=	MULTI_BAND\n',
-	'HARDNESS_PARAMETERIZATION	=	MONTI\n',
-	'DETECT_GRASS	=	FALSE\n',
-	'PLASTIC	=	FALSE\n',
-	'JAM	=	FALSE\n',
-	'WATER_LAYER	=	FALSE\n',
-	'HEIGHT_NEW_ELEM	=	0.02\n',
-	'MINIMUM_L_ELEMENT	=	0.0025\n',
-	'COMBINE_ELEMENTS	=	TRUE\n',
-	'ADVECTIVE_HEAT	=	FALSE\n\n',
-
-	'[INTERPOLATIONS1D]\n',
-	'WINDOW_SIZE	=	43200\n',
-	'PSUM::resample	=	linear\n',
-	'PSUM::linear	=	43200\n',
-	'PSUM::linea::extrapolate = true\n'
-	])
-	INI_file.close()
-	return name+'_'+fact+'_case2.ini'
+	return name+'_'+fact+'.ini'
 
 
 

@@ -8,11 +8,11 @@ import pandas as pd
 import numpy as np 
 
 
-if os.path.isfile('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_GF.txt'): 
-	os.remove('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_GF.txt')
+# if os.path.isfile('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_GF.txt'): 
+# 	os.remove('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_GF.txt')
 
-# if os.path.isfile('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_AVD.txt'): 
-# 	os.remove('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_AVD.txt')
+if os.path.isfile('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_AVD.txt'): 
+	os.remove('/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_AVD.txt')
 #Import data------------------------------
 
 lof = os.listdir('/home/user/Documents/Programming/Python/Masterarbeit/ERA5/data')
@@ -37,12 +37,12 @@ for dataset in filenames:
 #closest grid point in ERA5 data --> method = nearest
 #For comparison with ERA5: Same data if you choose location of airport, closest gridpoint is equal
 
-	read_data = read_data.sel(longitude = 15.624383, latitude = 78.2004,
-		method = 'nearest')
-	precip = read_data['tp'].to_series()
-	T = read_data['t2m'].to_series()
-	HS = read_data['sd'].to_series()
-	ptype = read_data['ptype'].to_series()
+	# read_data = read_data.sel(longitude = 15.624383, latitude = 78.2004,
+	# 	method = 'nearest')
+	# precip = read_data['tp'].to_series()
+	# T = read_data['t2m'].to_series()
+	# HS = read_data['sd'].to_series()
+	# ptype = read_data['ptype'].to_series()
 
 	# for i in range(0,len(precip.index)):
 	# 	if precip.index[i] == ptype.index[i]:
@@ -52,12 +52,12 @@ for dataset in filenames:
 
 # For the comparison between ERA5 and Adventdalen choose different location
 
-	# read_data = read_data.sel(longitude = 15.8310, latitude = 78.2022,
-	# 	method = 'nearest')
-	# precip = read_data['tp'].to_series()
-	# T = read_data['t2m'].to_series()
-	# HS = read_data['sd'].to_series()
-	# ptype = read_data['ptype'].to_series()
+	read_data = read_data.sel(longitude = 15.8310, latitude = 78.2022,
+		method = 'nearest')
+	precip = read_data['tp'].to_series()
+	T = read_data['t2m'].to_series()
+	HS = read_data['sd'].to_series()
+	ptype = read_data['ptype'].to_series()
 
 # In order to prevent overlapping data from the two model runs, use the 06UTC run for the time
 # from 07UTC to 18 UTC and the 18 UTC run from 19UTC to 06 UTC
@@ -69,9 +69,7 @@ for dataset in filenames:
 		T = T[select == True]
 		HS = HS[select == True]
 		ptype = ptype[select ==True]
-
-	
-	 	for i in range(0,len(precip)):
+		for i in range(0,len(precip)):
 			for j in range(0,len(ERA5_data)):
 				if precip.index[i] == ERA5_data.index[j]:
 					ERA5_data['RR'][j] = precip[i]
@@ -87,8 +85,7 @@ for dataset in filenames:
 		T = T[select == True]
 		HS = HS[select == True]
 		ptype = ptype[select ==True]
-
-	 	for i in range(0,len(precip)):
+		for i in range(0,len(precip)):
 			for j in range(0,len(ERA5_data)):
 				if precip.index[i] == ERA5_data.index[j]:
 					ERA5_data['RR'][j] = precip[i]
@@ -99,15 +96,15 @@ for dataset in filenames:
 					break
 
 ERA5_data.RRmm = ERA5_data.RR.multiply(10**3) # convert to [mm], needed by Snowpack
-ERA5_data.RRmm = ERA5_data.RRmm.round(2) #round to two decimal places
-ERA5_data.RR = ERA5_data.RR.round(2)
-ERA5_data.HS = ERA5_data.HS.round(2)
-ERA5_data.T2m = ERA5_data.T2m.round(2)
-ERA5_data.ptype = ERA5_data.ptype.round(2)
+# ERA5_data.RRmm = ERA5_data.RRmm.round(2) #round to two decimal places
+# ERA5_data.RR = ERA5_data.RR.round(2)
+# ERA5_data.HS = ERA5_data.HS.round(2)
+# ERA5_data.T2m = ERA5_data.T2m.round(2)
+# ERA5_data.ptype = ERA5_data.ptype.round(2)
 
-ERA5_data.to_csv(path_or_buf='/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_GF.txt',
- sep=",", na_rep='NaN', index = True, header=True, mode='a') 
+# ERA5_data.to_csv(path_or_buf='/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_GF.txt',
+#  sep=",", na_rep='NaN', index = True, header=True, mode='a') 
 
 # For data from Adventdalen:
-# ERA5_data.to_csv(path_or_buf='/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_AVD.txt',
-#  sep=",", na_rep='NaN', index = True, header=True, mode='a')
+ERA5_data.to_csv(path_or_buf='/home/user/Documents/Programming/Python/Masterarbeit/data/ERA5_AVD.txt',
+ sep=",", na_rep='NaN', index = True, header=True, mode='a')

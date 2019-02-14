@@ -45,9 +45,9 @@ GF_all = pd.read_csv('raw_data/Gruvefjellet_Res_data.dat',
 	'R_surf_ohm','R_1m_ohm', 'R_2m_ohm', 'R_3m_ohm', 'R_4m_ohm',
 	'R_5m_ohm', 'R_6m_ohm', 'Batt_V_Min'])
 
-GF_data = GF_all['2016-01-01 00:00:00':'2017-06-27 00:00:00']			 	
-AVD_data = AVD_all['2016-01-01 00:00:00':'2017-06-27 00:00:00']
-AVD_rad_data = AVD_rad_data['2016-01-01 00:00:00':'2017-06-27 00:00:00'] 
+GF_data = GF_all['2016-08-01 00:00:00':'2017-04-30 23:00:00']			 	
+AVD_data = AVD_all['2016-08-01 00:00:00':'2017-04-30 23:00:00']
+AVD_rad_data = AVD_rad_data['2016-08-01 00:00:00':'2017-04-30 23:00:00'] 
 
 GF_data['month'] = GF_data.index.month
 AVD_data['month'] = AVD_data.index.month
@@ -124,8 +124,8 @@ raw_stats['davg_diff'] = diff.resample('D').mean()
 raw_stats['mavg_diff'] = diff.resample('M').mean()
 raw_stats['yavg_diff'] = diff.resample('Y').mean()
 
-daterange = pd.date_range(start='2016-01-01 00:00:00',
-	end='2017-06-27 00:00:00', periods=None, freq='D',
+daterange = pd.date_range(start='2016-08-01 00:00:00',
+	end='2017-04-30 23:00:00', periods=None, freq='D',
 	normalize=False, name='DateTime', closed=None)
 mavg_diff = pd.Series(np.nan, index=daterange, dtype=None, name=None, copy=False, fastpath=False)
 yavg_diff = pd.Series(np.nan, index=daterange, dtype=None, name=None, copy=False, fastpath=False)
@@ -157,8 +157,9 @@ ax2.set_ylabel('rel. Humidity [%]')
 ax2.legend(loc = 'lower center')
 ax2.set_title('Corr')
 f1.savefig('figures/RH_rawVScorr.png', bbox_inches='tight')
-plt.close(f1)
-# plt.show()
+f1.savefig('figures/RH_rawVScorr.eps', bbox_inches='tight')
+# plt.close(f1)
+plt.show()
 
 
 f2, (ax1,ax2) = plt.subplots(nrows=2, ncols=1, sharex=True, figsize = (15,10))
@@ -177,7 +178,8 @@ ax2.set_ylabel('rel. Humidity [%]')
 ax2.legend(loc = 'lower center')
 ax2.set_title('24h Rolling mean corr')
 f2.savefig('figures/RH_rollm24h_rawVScorr.png', bbox_inches='tight')
-plt.close(f2)
+f2.savefig('figures/RH_rollm24h_rawVScorr.eps', bbox_inches='tight')
+# plt.close(f2)
 
 f3, (ax1,ax2) = plt.subplots(nrows=2, ncols=1, figsize = (15,10), sharex=True, sharey=False, squeeze=True, subplot_kw=None, gridspec_kw=None)
 ax1.plot(GF_data.index, GF_data.LF_minutt_Avg.rolling(window=24).mean(), color = 'g', linewidth = 1, label = 'Gruvefjellet (GF)')
@@ -197,7 +199,8 @@ ax2.set_ylabel('rel. humidity difference [%]')
 ax2.legend(loc = 'lower center')
 ax2.set_title('Mean differences GF-AVD')
 f3.savefig('figures/RH_meanDiff.png', bbox_inches='tight')
-plt.close(f3)
+f3.savefig('figures/RH_meanDiff.eps', bbox_inches='tight')
+# plt.close(f3)
 
 slope, intercept, r_value, p_value, std_err = stats.linregress(GF_data.LF_minutt_Avg, AVD_data.LF2m_Rotron_Avg)
 f4, ax1 = plt.subplots(nrows = 1, ncols =1)
@@ -211,7 +214,8 @@ ax1.set_ylim(35,102)
 plt.text(37, 99, 'y = '+str(intercept.round(2))+'+'+str(slope.round(2))+'*x' ,verticalalignment='top', horizontalalignment='left', fontsize = 15)
 plt.text(37, 95, 'R ='+str(r_value.round(2)) ,verticalalignment='top', horizontalalignment='left', fontsize = 15)
 f4.savefig('figures/RH_GFvsAVD.png', bbox_inches='tight')
-plt.close(f4)
+f4.savefig('figures/RH_GFvsAVD.eps', bbox_inches='tight')
+# plt.close(f4)
 
 slope, intercept, r_value, p_value, std_err = stats.linregress(RH_calc_GF.absH, RH_calc_AVD.absH)
 f4, ax1 = plt.subplots(nrows = 1, ncols =1)
@@ -225,7 +229,8 @@ ax1.set_ylim(0,0.01)
 plt.text(0, 0.0097, 'y = '+str(intercept.round(2))+'+'+str(slope.round(2))+'*x' ,verticalalignment='top', horizontalalignment='left', fontsize = 15)
 plt.text(0, 0.0092, 'R ='+str(r_value.round(2)) ,verticalalignment='top', horizontalalignment='left', fontsize = 15)
 f4.savefig('figures/absHum_GFvsAVD.png', bbox_inches='tight')
-plt.show(f4)
+f4.savefig('figures/absHum_GFvsAVD.eps', bbox_inches='tight')
+# plt.show(f4)
 
 raw_stats={}
 diff = RH_calc_GF.absH - RH_calc_AVD.absH
@@ -233,8 +238,8 @@ raw_stats['davg_diff'] = diff.resample('D').mean()
 raw_stats['mavg_diff'] = diff.resample('M').mean()
 raw_stats['yavg_diff'] = diff.resample('Y').mean()
 
-daterange = pd.date_range(start='2016-01-01 00:00:00',
-	end='2017-06-27 00:00:00', periods=None, freq='D',
+daterange = pd.date_range(start='2016-08-01 00:00:00',
+	end='2017-04-30 23:00:00', periods=None, freq='D',
 	normalize=False, name='DateTime', closed=None)
 mavg_diff = pd.Series(np.nan, index=daterange, dtype=None, name=None, copy=False, fastpath=False)
 yavg_diff = pd.Series(np.nan, index=daterange, dtype=None, name=None, copy=False, fastpath=False)
@@ -268,7 +273,8 @@ ax2.set_ylabel('abs. humidity difference [%]')
 ax2.legend(loc = 'lower center')
 ax2.set_title('Mean differences GF-AVD')
 f3.savefig('figures/absH_meanDiff.png', bbox_inches='tight')
-plt.show(f3)
+f3.savefig('figures/absH_meanDiff.eps', bbox_inches='tight')
+plt.show()
 
 
 # #-------------------------------------------Radiation---------------------------------
